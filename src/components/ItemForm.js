@@ -132,6 +132,13 @@ export default function ItemForm({ canWrite, onSaved, editing, setEditing }) {
         }
 
         await supabase.from('items').insert([payload]);
+
+        // 👇 Reset manual do formulário após novo cadastro
+        setName('');
+        setQuantity(0);
+        setLocation('');
+        setFile(null);
+        setSuggestions([]);
       }
 
       setEditing(null);
