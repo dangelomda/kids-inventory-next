@@ -47,7 +47,7 @@ export default function ItemList({ items, canWrite, onEdit, onDelete, onImageCli
       const { error: dbError } = await supabase.from('items').delete().eq('id', item.id);
       if (dbError) throw dbError;
 
-      // 3. Notifica o componente pai para recarregar a lista (no seu caso, é a função loadItems)
+      // 3. Notifica o componente pai para recarregar a lista
       if (onDelete) {
         onDelete(item);
       }
@@ -66,7 +66,7 @@ export default function ItemList({ items, canWrite, onEdit, onDelete, onImageCli
             <img
               src={item.photo_url}
               alt={item.name}
-              onClick={() => onImageClick(item.photo_url)}
+              onClick={() => onImageClick && onImageClick(item.photo_url)}
             />
           )}
           <div className="item-card-content">
