@@ -19,6 +19,7 @@ export default function Page() {
   const [editing, setEditing] = useState(null);
   const [adminOpen, setAdminOpen] = useState(false);
   const [scrollToItemId, setScrollToItemId] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null); // NOVO
 
   const formRef = useRef(null);
   const adminPanelRef = useRef(null);
@@ -149,15 +150,12 @@ export default function Page() {
               </button>
             </>
           ) : (
-            // MUDANÇA ABAIXO: Adicionado queryParams para forçar a seleção de conta
             <AuthBadge onClick={async () => {
               await supabase.auth.signInWithOAuth({
                 provider: 'google',
                 options: {
                   redirectTo: window.location.origin,
-                  queryParams: {
-                    prompt: 'select_account'
-                  }
+                  queryParams: { prompt: 'select_account' }
                 }
               });
             }} />
@@ -181,7 +179,13 @@ export default function Page() {
           />
           <button type="button" onClick={exportXlsx} className="secondary">Exportar XLSX</button>
         </div>
-        <ItemList items={filteredItems} canWrite={canWrite} onEdit={handleEditClick} onDelete={onDelete} />
+        <ItemList
+          items={filteredItems}
+          canWrite={canWrite}
+          onEdit={handleEditClick}
+          onDelete={onDelete}
+          onImageClick={(url) => setSelectedImage(url)}
+        />
         <div ref={adminPanelRef}>
           <AdminPanel visible={adminOpen} onClose={() => setAdminOpen(false)} isAdmin={isAdmin} />
         </div>
@@ -191,6 +195,13 @@ export default function Page() {
         <button onClick={() => setAdminOpen(v => !v)} className="admin-fab">
           Admin
         </button>
+      )}
+
+      {selectedImage && (
+        <div className="image-modal" onClick={() => setSelectedImage(null)}>
+          <button className="close-btn" onClick={() => setSelectedImage(null)}>×</button>
+          <img src={selectedImage} alt="Foto ampliada" />
+        </div>
       )}
     </>
   );
