@@ -31,35 +31,41 @@ export default function AdminPanel({ visible, onClose, isAdmin }) {
 
   // Convida/ativa usuário via Edge Function
   async function handleInvite() {
-    if (!isAdmin) return alert('Apenas admin.');
-    if (!email.includes('@')) return alert('E-mail inválido');
+  if (!isAdmin) return alert('Apenas admin.');
+  if (!email.includes('@')) return alert('E-mail inválido');
 
-    setBusy(true);
-    try {
-      const { data, error } = await supabase.functions.invoke('admin-invite', {
-        body: { email: email.trim().toLowerCase() },
-      });
+  setBusy(true);
+  try {
+    const { data, error } = await supabase.functions.invoke('admin-invite', {
+      body: { email: email.trim().toLowerCase() },
+    });
 
-      // Erro de rede ou execução
-      if (error) {
-        alert(data?.message || data?.error || error.message || 'Erro inesperado ao convidar usuário.');
-      }
-      // Função retornou erro no corpo
-      else if (data?.error) {
+    // Se deu erro de rede/config
+    if (error) {
+      alert(data?.message || data?.error || error.message || 'Erro inesperado ao convidar usuário.');
+    }
+    // Se a função respondeu com erro no corpo
+    else if (data?.error) {
+      if (data.error === 'Usuário não encontrado') {
+        // 👇 Mensagem amigável no caso de 404
+        alert(data.message || 'É necessário que o usuário faça login pelo menos uma vez antes de ser convidado.');
+      } else {
         alert(data.message || data.error);
       }
-      // Sucesso
-      else {
-        alert(data?.message || `Usuário ${email} promovido a membro com sucesso!`);
-        setEmail('');
-        load(); // recarrega a lista
-      }
-    } catch (err) {
-      alert(err.message || 'Ocorreu um erro ao chamar a função.');
-    } finally {
-      setBusy(false);
     }
+    // Sucesso
+    else {
+      alert(data?.message || `Usuário ${email} promovido a membro com sucesso!`);
+      setEmail('');
+      load();
+    }
+  } catch (err) {
+    alert(err.message || 'Ocorreu um erro ao chamar a função.');
+  } finally {
+    setBusy(false);
   }
+}
+
 
   async function toggle(p) {
     const { error } = await supabase.from('profiles').update({ active: !p.active }).eq('id', p.id);

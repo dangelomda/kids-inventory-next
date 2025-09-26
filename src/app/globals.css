@@ -164,6 +164,42 @@ button.promote { background-color: var(--promote); }
     border: 2px solid white; z-index: 1000;
   }
 }
+
+/* --- RESPONSIVIDADE PARA TABLET (entre celular e desktop) --- */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .header {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1rem;
+    padding: 1.5rem 1rem;
+  }
+
+  .header-left,
+  .header-right {
+    flex: unset;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
+  .header-center {
+    flex: unset;
+    justify-content: center;
+    margin-top: 0.5rem;
+  }
+
+  .header-title {
+    font-size: 1.8rem;
+  }
+
+  .badge {
+    margin: 0 auto;
+  }
+}
+
 /* --- MODAL DE IMAGEM --- */
 .image-modal {
   position: fixed;
