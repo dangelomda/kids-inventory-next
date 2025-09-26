@@ -93,7 +93,11 @@ export default function ItemForm({ canWrite, onSaved, editing, setEditing }) {
 
     setBusy(true);
     try {
-      const payload = { name: name.trim(), quantity: Number(quantity) || 0, location: location.trim() };
+      const payload = {
+        name: name.trim(),
+        quantity: Number(quantity) || 0,
+        location: location.trim()
+      };
       if (file) {
         const compressed = await compressImage(file);
         const refs = await uploadPhoto(compressed);
@@ -109,12 +113,12 @@ export default function ItemForm({ canWrite, onSaved, editing, setEditing }) {
         }
         savedItemId = editing.id;
       } else {
-        // 👇 Verifica se já existe um item igual antes de cadastrar
+        // 👇 Verifica duplicado apenas por nome + local, ignorando maiúsculas/minúsculas
         const { data: existing } = await supabase
           .from('items')
           .select('id')
-          .eq('name', name.trim())
-          .eq('location', location.trim())
+          .ilike('name', name.trim())
+          .ilike('location', location.trim())
           .maybeSingle();
 
         if (existing) {
