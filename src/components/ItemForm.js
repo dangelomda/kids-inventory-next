@@ -46,6 +46,7 @@ export default function ItemForm({ canWrite, onSaved, editing, setEditing }) {
   const [location, setLocation] = useState('');
   const [file, setFile] = useState(null);
   const [busy, setBusy] = useState(false);
+  const [suggestions, setSuggestions] = useState([]); // 👈 sugestões
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -59,6 +60,7 @@ export default function ItemForm({ canWrite, onSaved, editing, setEditing }) {
       setLocation('');
     }
     setFile(null);
+    setSuggestions([]);
   }, [editing]);
 
   async function uploadPhoto(fileToUpload) {
@@ -67,6 +69,21 @@ export default function ItemForm({ canWrite, onSaved, editing, setEditing }) {
     if (error) throw error;
     const { data } = supabase.storage.from('item-photos').getPublicUrl(key);
     return { photo_key: key, photo_url: `${data.publicUrl}?v=${Date.now()}` };
+  }
+
+  // 👇 Busca sugestões de itens parecidos
+  async function fetchSuggestions(value) {
+    if (!value || value.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    const { data, error } = await supabase
+      .from('items')
+      .select('id, name, location, quantity')
+      .ilike('name', `%${value}%`)
+      .limit(5);
+
+    if (!error) setSuggestions(data || []);
   }
 
   const handleSubmit = async (e) => {
@@ -82,20 +99,38 @@ export default function ItemForm({ canWrite, onSaved, editing, setEditing }) {
         const refs = await uploadPhoto(compressed);
         Object.assign(payload, refs);
       }
-      
-      let savedItemId = null; // Variável para guardar o ID do item editado
+
+      let savedItemId = null;
+
       if (editing) {
         await supabase.from('items').update(payload).eq('id', editing.id);
         if (file && editing.photo_key) {
           await supabase.storage.from('item-photos').remove([editing.photo_key]);
         }
-        savedItemId = editing.id; // Guarda o ID
+        savedItemId = editing.id;
       } else {
+        // 👇 Verifica se já existe um item igual antes de cadastrar
+        const { data: existing } = await supabase
+          .from('items')
+          .select('id')
+          .eq('name', name.trim())
+          .eq('location', location.trim())
+          .maybeSingle();
+
+        if (existing) {
+          const confirmDup = confirm(
+            `O item "${name}" já está cadastrado em "${location}". Deseja cadastrar mesmo assim?`
+          );
+          if (!confirmDup) {
+            setBusy(false);
+            return;
+          }
+        }
+
         await supabase.from('items').insert([payload]);
       }
-      
+
       setEditing(null);
-      // MUDANÇA: Passa o ID (ou null se for um item novo) para a página principal
       onSaved(savedItemId);
 
     } catch (err) {
@@ -106,11 +141,35 @@ export default function ItemForm({ canWrite, onSaved, editing, setEditing }) {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="form-group">
+    <form onSubmit={handleSubmit} style={{ position: 'relative' }}>
+      <div className="form-group" style={{ position: 'relative' }}>
         <label htmlFor="name">Item:</label>
-        <input id="name" type="text" value={name} onChange={e => setName(e.target.value)} required />
+        <input
+          id="name"
+          type="text"
+          value={name}
+          onChange={e => {
+            setName(e.target.value);
+            fetchSuggestions(e.target.value);
+          }}
+          required
+          autoComplete="off"
+        />
+        {/* 👇 Sugestões de itens */}
+        {suggestions.length > 0 && (
+          <ul className="suggestions-box">
+            {suggestions.map(s => (
+              <li key={s.id} onClick={() => {
+                setName(s.name);
+                setSuggestions([]);
+              }}>
+                {s.name} — {s.location} ({s.quantity})
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
+
       <div className="form-group">
         <label htmlFor="quantity">Quantidade:</label>
         <input id="quantity" type="number" value={quantity} onChange={e => setQuantity(e.target.value)} />
@@ -146,7 +205,7 @@ export default function ItemForm({ canWrite, onSaved, editing, setEditing }) {
         ref={fileInputRef}
         style={{ display: 'none' }}
       />
-      
+
       <div className="actions">
         <button type="submit" disabled={busy}>{editing ? 'Salvar Alterações' : 'Cadastrar'}</button>
         {editing && <button type="button" className="secondary" onClick={() => setEditing(null)}>Cancelar</button>}

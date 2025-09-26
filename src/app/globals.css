@@ -232,3 +232,31 @@ button.promote { background-color: var(--promote); }
   background: transparent;
   border: none;
 }
+
+/* --- SUGESTÕES DE AUTOCOMPLETE --- */
+.suggestions-box {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-top: 4px;
+  z-index: 20;
+  max-height: 200px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
+}
+
+.suggestions-box li {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.suggestions-box li:hover {
+  background: #f3f4f6;
+}
+
