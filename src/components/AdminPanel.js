@@ -40,22 +40,15 @@ export default function AdminPanel({ visible, onClose, isAdmin }) {
       body: { email: email.trim().toLowerCase() },
     });
 
-    // Se deu erro de rede/config
     if (error) {
-      alert(data?.message || data?.error || error.message || 'Erro inesperado ao convidar usuário.');
-    }
-    // Se a função respondeu com erro no corpo
-    else if (data?.error) {
-      if (data.error === 'Usuário não encontrado') {
-        // 👇 Mensagem amigável no caso de 404
-        alert(data.message || 'É necessário que o usuário faça login pelo menos uma vez antes de ser convidado.');
-      } else {
-        alert(data.message || data.error);
-      }
-    }
-    // Sucesso
-    else {
-      alert(data?.message || `Usuário ${email} promovido a membro com sucesso!`);
+      // erro 404 ou outro non-2xx → data vem do JSON da função
+      alert(data?.message || data?.error || 'Erro inesperado. Verifique se o usuário já fez login pelo menos uma vez.');
+    } else if (data?.error) {
+      // erro explícito vindo da função
+      alert(data.message || data.error);
+    } else {
+      // sucesso
+      alert(data?.message || `Usuário ${email} adicionado como membro!`);
       setEmail('');
       load();
     }
@@ -65,6 +58,7 @@ export default function AdminPanel({ visible, onClose, isAdmin }) {
     setBusy(false);
   }
 }
+
 
 
   async function toggle(p) {
