@@ -102,7 +102,7 @@ button.promote { background-color: var(--promote); }
 
 /* --- ESTILOS PARA O PAINEL ADMIN --- */
 .table-container {
-  overflow-x: auto; /* <--- ESSA LINHA FAZ A MÁGICA NO CELULAR */
+  overflow-x: auto;
   padding: 0.5rem;
 }
 .table {
@@ -260,14 +260,13 @@ button.promote { background-color: var(--promote); }
   background: #f3f4f6;
 }
 
-/* Adicione este bloco de código no final do seu arquivo globals.css */
-
 /* --- BOTÃO VOLTAR AO TOPO --- */
 .back-to-top-btn {
   position: fixed;
   bottom: 20px;
   right: 20px;
-  background-color: var(--promote);
+  /* MUDANÇA: Cor ajustada para o azul primário para combinar com o botão Admin */
+  background-color: var(--primary);
   color: white;
   border: 2px solid white;
   border-radius: 50%;
@@ -295,14 +294,14 @@ button.promote { background-color: var(--promote); }
   transform: translateY(0);
 }
 
-/* --- AJUSTE PARA CELULAR --- */
+/* --- AJUSTE PARA CELULAR (SOBRESCREVE O MEDIA QUERY ANTERIOR) --- */
 @media (max-width: 768px) {
-  /* ...outros estilos de celular... */
-
+  /* ... (mantém seus outros estilos de celular aqui) ... */
+  
   /* Posiciona o botão 'Voltar ao Topo' ACIMA do botão 'Admin' */
   .back-to-top-btn {
     bottom: 90px;
-    right: 20px;
+    right: 20px; /* Garante o mesmo alinhamento horizontal do botão Admin */
     width: 45px;
     height: 45px;
     font-size: 1.2rem;
