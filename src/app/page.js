@@ -19,7 +19,10 @@ export default function Page() {
   const [editing, setEditing] = useState(null);
   const [adminOpen, setAdminOpen] = useState(false);
   const [scrollToItemId, setScrollToItemId] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null); // NOVO
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  // NOVO: Estado para o botão 'Voltar ao Topo'
+  const [isBackToTopVisible, setBackToTopVisible] = useState(false);
 
   const formRef = useRef(null);
   const adminPanelRef = useRef(null);
@@ -58,15 +61,10 @@ export default function Page() {
   }, []);
 
   const onDelete = useCallback(async (item) => {
-    if (!canWrite) return alert('Sem permissão.');
-    if (!confirm(`Excluir "${item.name}"?`)) return;
-    const { error } = await supabase.from('items').delete().eq('id', item.id);
-    if (error) {
-      alert(error.message);
-    } else {
-      loadItems();
-    }
-  }, [canWrite, loadItems]);
+    // A lógica de apagar a foto e o item está corretamente no ItemList.js
+    // Esta função no page.js agora só precisa recarregar a lista.
+    loadItems();
+  }, [loadItems]);
 
   const exportXlsx = useCallback(async () => {
     const { data } = await supabase.from('items').select('*').order('name');
@@ -122,6 +120,27 @@ export default function Page() {
       setScrollToItemId(null);
     }
   }, [scrollToItemId, items]);
+  
+  // NOVO: Efeito para controlar a visibilidade do botão de voltar ao topo
+  useEffect(() => {
+    const toggleVisibility = () => {
+      if (window.scrollY > 300) {
+        setBackToTopVisible(true);
+      } else {
+        setBackToTopVisible(false);
+      }
+    };
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
+  }, []);
+
+  // NOVO: Função para rolar a página para o topo de forma instantânea
+  const scrollToTop = () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'auto' // 'auto' faz a rolagem ser instantânea
+    });
+  };
 
   const filteredItems = useMemo(
     () => items.filter(i => !search || i.name.toLowerCase().includes(search.toLowerCase())),
@@ -203,6 +222,15 @@ export default function Page() {
           <img src={selectedImage} alt="Foto ampliada" />
         </div>
       )}
+      
+      {/* NOVO: Botão 'Voltar ao Topo' */}
+      <button
+        onClick={scrollToTop}
+        className={`back-to-top-btn ${isBackToTopVisible ? 'visible' : ''}`}
+        title="Voltar ao topo"
+      >
+        ↑
+      </button>
     </>
   );
 }

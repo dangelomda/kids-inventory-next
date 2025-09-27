@@ -260,3 +260,51 @@ button.promote { background-color: var(--promote); }
   background: #f3f4f6;
 }
 
+/* Adicione este bloco de código no final do seu arquivo globals.css */
+
+/* --- BOTÃO VOLTAR AO TOPO --- */
+.back-to-top-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background-color: var(--promote);
+  color: white;
+  border: 2px solid white;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  cursor: pointer;
+  z-index: 999;
+
+  /* Efeito de aparição */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+.back-to-top-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+/* --- AJUSTE PARA CELULAR --- */
+@media (max-width: 768px) {
+  /* ...outros estilos de celular... */
+
+  /* Posiciona o botão 'Voltar ao Topo' ACIMA do botão 'Admin' */
+  .back-to-top-btn {
+    bottom: 90px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    font-size: 1.2rem;
+  }
+}
