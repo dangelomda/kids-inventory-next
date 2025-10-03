@@ -3,6 +3,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
+import Image from 'next/image'; // MUDANÇA: Importa o componente de Imagem
 
 export default function AdminPanel({ visible, onClose, isAdmin }) {
   const [rows, setRows] = useState([]);
@@ -13,6 +14,7 @@ export default function AdminPanel({ visible, onClose, isAdmin }) {
   async function load() {
     if (!isAdmin) return;
     setBusy(true);
+    // select('*') agora vai incluir a nova coluna 'avatar_url' que criamos
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -31,35 +33,34 @@ export default function AdminPanel({ visible, onClose, isAdmin }) {
 
   // Convida/ativa usuário via Edge Function
   async function handleInvite() {
-  if (!isAdmin) return alert('Apenas admin.');
-  if (!email.includes('@')) return alert('E-mail inválido');
+    if (!isAdmin) return alert('Apenas admin.');
+    if (!email.includes('@')) return alert('E-mail inválido');
 
-  setBusy(true);
-  try {
-    const { data, error } = await supabase.functions.invoke('admin-invite', {
-      body: { email: email.trim().toLowerCase() },
-    });
+    setBusy(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('admin-invite', {
+        body: { email: email.trim().toLowerCase() },
+      });
 
-    if (error) {
-      // erro 404 ou outro non-2xx → data vem do JSON da função
-      alert(data?.message || data?.error || 'Erro inesperado. Verifique se o usuário já fez login pelo menos uma vez.');
-    } else if (data?.error) {
-      // erro explícito vindo da função
-      alert(data.message || data.error);
-    } else {
-      // sucesso
-      alert(data?.message || `Usuário ${email} adicionado como membro!`);
-      setEmail('');
-      load();
+      if (error) {
+        // erro 404 ou outro non-2xx → data vem do JSON da função
+        const errorData = await error.context.json();
+        alert(errorData.message || 'Erro inesperado. Verifique se o usuário já fez login pelo menos uma vez.');
+      } else if (data?.error) {
+        // erro explícito vindo da função
+        alert(data.message || data.error);
+      } else {
+        // sucesso
+        alert(data?.message || `Usuário ${email} adicionado como membro!`);
+        setEmail('');
+        load();
+      }
+    } catch (err) {
+      alert(err.message || 'Ocorreu um erro ao chamar a função.');
+    } finally {
+      setBusy(false);
     }
-  } catch (err) {
-    alert(err.message || 'Ocorreu um erro ao chamar a função.');
-  } finally {
-    setBusy(false);
   }
-}
-
-
 
   async function toggle(p) {
     const { error } = await supabase.from('profiles').update({ active: !p.active }).eq('id', p.id);
@@ -118,6 +119,8 @@ export default function AdminPanel({ visible, onClose, isAdmin }) {
           <table className="table">
             <thead>
               <tr>
+                {/* MUDANÇA: Adicionada coluna Avatar */}
+                <th style={{width: '50px'}}>Avatar</th>
                 <th>Email</th>
                 <th>Função</th>
                 <th>Status</th>
@@ -127,6 +130,18 @@ export default function AdminPanel({ visible, onClose, isAdmin }) {
             <tbody>
               {rows.map(p => (
                 <tr key={p.id}>
+                  {/* MUDANÇA: Adicionada a célula com a imagem */}
+                  <td>
+                    {p.avatar_url && (
+                      <Image
+                        src={p.avatar_url}
+                        alt="Avatar"
+                        width={32}
+                        height={32}
+                        className={`avatar-img avatar-border-${p.role || 'visitor'}`}
+                      />
+                    )}
+                  </td>
                   <td>{p.email}</td>
                   <td>
                     <span className={`role-badge ${p.role}`}>{p.role}</span>

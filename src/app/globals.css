@@ -84,6 +84,38 @@ button.promote { background-color: var(--promote); }
 .header-right button { padding: 8px 14px; font-size: 0.9rem; }
 .admin-fab { display: none; }
 
+/* --- NOVOS ESTILOS DE AVATAR --- */
+.avatar-img {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid transparent; /* Borda base transparente */
+}
+.avatar-border-admin {
+  border-color: var(--promote); /* Roxo */
+}
+.avatar-border-member {
+  border-color: #16a34a; /* Verde */
+}
+.avatar-border-visitor {
+  border-color: #374151; /* Cinza escuro/preto */
+}
+
+/* NOVO BOTÃO DE LOGOUT PARA CELULAR */
+.logout-badge-btn {
+  display: none; /* Escondido por padrão no desktop */
+  background-color: rgba(255, 255, 255, 0.15);
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.875rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+}
+.logout-badge-btn:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
 /* --- ESTILOS DO GRID DE ITENS --- */
 .item-grid {
   display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem;
@@ -102,7 +134,7 @@ button.promote { background-color: var(--promote); }
 
 /* --- ESTILOS PARA O PAINEL ADMIN --- */
 .table-container {
-  overflow-x: auto;
+  /* overflow-x: auto;  A rolagem agora só se aplica no mobile */
   padding: 0.5rem;
 }
 .table {
@@ -145,23 +177,47 @@ button.promote { background-color: var(--promote); }
   .header {
     flex-direction: column; gap: 0.75rem; padding: 1.5rem 1rem;
   }
-  .header-left, .header-right { display: none; }
+  .header-left { display: none; }
   .header-center {
     flex-direction: column; gap: 1rem; order: 1;
   }
   .main-logo { order: 1; }
   .header-title { font-size: 2.5rem; order: 2; }
+  
+  /* Ajuste no header-right para celular */
   .header-right {
-    display: flex; order: 3; justify-content: center; width: 100%;
+    display: flex !important; 
+    order: 2 !important; /* Coloca abaixo do título */
+    justify-content: center !important; 
+    width: 100% !important;
   }
   .header .badge { padding: 8px 16px; }
-  .header .header-right button { display: none; }
+
+  /* Esconde os botões de Admin e Sair do desktop */
+  .header-right .header-admin-btn,
+  .header-right .header-logout-btn { 
+    display: none !important;
+  }
+
+  /* Mostra o novo botão de Sair translúcido */
+  .logout-badge-btn {
+    display: inline-block !important;
+  }
+
   .admin-fab {
     display: flex; position: fixed; bottom: 20px; right: 20px;
     background-color: var(--primary); color: white; border-radius: 50%;
     width: 60px; height: 60px; justify-content: center; align-items: center;
     font-size: 0.9rem; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     border: 2px solid white; z-index: 1000;
+  }
+
+  /* No celular, a tabela volta a ter scroll horizontal para não quebrar */
+  .table-container {
+    overflow-x: auto !important;
+  }
+  .table td[style*="white-space: nowrap"] {
+    white-space: nowrap !important;
   }
 }
 
@@ -265,7 +321,6 @@ button.promote { background-color: var(--promote); }
   position: fixed;
   bottom: 20px;
   right: 20px;
-  /* MUDANÇA: Cor ajustada para o azul primário para combinar com o botão Admin */
   background-color: var(--primary);
   color: white;
   border: 2px solid white;

@@ -20,8 +20,6 @@ export default function Page() {
   const [adminOpen, setAdminOpen] = useState(false);
   const [scrollToItemId, setScrollToItemId] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
-
-  // NOVO: Estado para o botão 'Voltar ao Topo'
   const [isBackToTopVisible, setBackToTopVisible] = useState(false);
 
   const formRef = useRef(null);
@@ -41,7 +39,7 @@ export default function Page() {
     }
     const { data: prof, error } = await supabase
       .from('profiles')
-      .select('role, active')
+      .select('role, active') // O avatar_url não é necessário aqui, pois já vem na sessão
       .eq('id', s.user.id)
       .maybeSingle();
     setSession(s);
@@ -60,9 +58,7 @@ export default function Page() {
     else setItems(data || []);
   }, []);
 
-  const onDelete = useCallback(async (item) => {
-    // A lógica de apagar a foto e o item está corretamente no ItemList.js
-    // Esta função no page.js agora só precisa recarregar a lista.
+  const onDelete = useCallback(() => {
     loadItems();
   }, [loadItems]);
 
@@ -121,7 +117,6 @@ export default function Page() {
     }
   }, [scrollToItemId, items]);
   
-  // NOVO: Efeito para controlar a visibilidade do botão de voltar ao topo
   useEffect(() => {
     const toggleVisibility = () => {
       if (window.scrollY > 300) {
@@ -134,11 +129,10 @@ export default function Page() {
     return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
-  // NOVO: Função para rolar a página para o topo de forma instantânea
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'auto' // 'auto' faz a rolagem ser instantânea
+      behavior: 'auto'
     });
   };
 
@@ -146,6 +140,11 @@ export default function Page() {
     () => items.filter(i => !search || i.name.toLowerCase().includes(search.toLowerCase())),
     [items, search]
   );
+  
+  // Função de logout, para ser usada por ambos os botões
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
     <>
@@ -158,13 +157,24 @@ export default function Page() {
         <div className="header-right">
           {isLogged ? (
             <>
-              <AuthBadge email={session?.user?.email} role={role} active={active} />
+              {/* MUDANÇA: Passando a URL do avatar para o AuthBadge */}
+              <AuthBadge 
+                email={session.user.email} 
+                role={role} 
+                active={active} 
+                avatarUrl={session.user.user_metadata?.avatar_url}
+              />
               {isAdmin && (
                 <button onClick={() => setAdminOpen(v => !v)} className="header-admin-btn secondary">
                   Admin
                 </button>
               )}
-              <button onClick={async () => { await supabase.auth.signOut(); }} className="secondary">
+              {/* Este botão de Sair agora tem uma classe para ser escondido no celular */}
+              <button onClick={handleSignOut} className="header-logout-btn secondary">
+                Sair
+              </button>
+              {/* MUDANÇA: Novo botão de Sair, que só vai aparecer no celular */}
+              <button onClick={handleSignOut} className="logout-badge-btn">
                 Sair
               </button>
             </>
@@ -223,7 +233,6 @@ export default function Page() {
         </div>
       )}
       
-      {/* NOVO: Botão 'Voltar ao Topo' */}
       <button
         onClick={scrollToTop}
         className={`back-to-top-btn ${isBackToTopVisible ? 'visible' : ''}`}
