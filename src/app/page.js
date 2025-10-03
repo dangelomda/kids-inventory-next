@@ -163,6 +163,7 @@ export default function Page() {
         <div className="header-right">
           {isLogged ? (
             <>
+              {/* ADICIONADO: Passando a URL do avatar */}
               <AuthBadge 
                 email={session.user.email} 
                 role={role} 
@@ -178,13 +179,10 @@ export default function Page() {
               <button onClick={handleSignOut} className="header-logout-btn secondary">
                 Sair
               </button>
-              {/* Botão de Sair para CELULAR (COM CORREÇÃO FINAL) */}
+              {/* ADICIONADO: Botão de Sair para CELULAR (COM onTouchEnd) */}
               <button
                 onClick={handleSignOut}
-                onTouchEnd={(e) => {
-                  e.preventDefault(); // Impede o evento de clique fantasma
-                  handleSignOut();
-                }}
+                onTouchEnd={handleSignOut}
                 className="logout-badge-btn"
               >
                 Sair
