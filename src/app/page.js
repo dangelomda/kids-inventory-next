@@ -148,9 +148,9 @@ export default function Page() {
     [items, search]
   );
   
-  // MUDANÇA 1: Tornar a função síncrona (remover async/await)
+  // 1. Manter a função síncrona, que é mais estável.
   const handleSignOut = () => {
-    supabase.auth.signOut(); // Apenas dispara o logout. O listener onAuthStateChange cuidará do resto.
+    supabase.auth.signOut();
   };
 
   return (
@@ -175,14 +175,23 @@ export default function Page() {
                   Admin
                 </button>
               )}
-              {/* Botão de Sair para DESKTOP */}
+              {/* O botão de desktop permanece, pois nunca deu problema. */}
               <button onClick={handleSignOut} className="header-logout-btn secondary">
                 Sair
               </button>
-              {/* MUDANÇA 2: Simplificar o botão de celular de volta para um onClick simples */}
-              <button onClick={handleSignOut} className="logout-badge-btn">
+              
+              {/* 2. O botão de celular vira uma tag <a> para máxima compatibilidade com iOS. */}
+              <a
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault(); // Essencial para o <a> não navegar.
+                  handleSignOut();
+                }}
+                className="logout-badge-btn"
+                role="button"
+              >
                 Sair
-              </button>
+              </a>
             </>
           ) : (
             <AuthBadge onClick={async () => {
