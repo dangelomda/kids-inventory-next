@@ -168,7 +168,7 @@ button.promote { background-color: var(--promote); }
     background-color: var(--primary); color: white; border-radius: 50%;
     width: 60px; height: 60px; justify-content: center; align-items: center;
     font-size: 0.9rem; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    border: 2px solid white; z-index: 1000;
+    border: 2px solid white; z-index: 1001;
   }
   /* ADICIONADO: Força o nowrap na célula de ações no mobile */
   .actions-cell {
@@ -288,7 +288,7 @@ button.promote { background-color: var(--promote); }
   font-weight: bold;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   cursor: pointer;
-  z-index: 999;
+  z-index: 1001;
 
   opacity: 0;
   visibility: hidden;
