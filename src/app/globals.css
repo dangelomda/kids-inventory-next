@@ -149,6 +149,7 @@ button.promote { background-color: var(--promote); }
   text-align: left;
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
+  vertical-align: middle; /* Alinha o conteúdo verticalmente */
 }
 .table th {
   font-weight: 600;
@@ -158,10 +159,10 @@ button.promote { background-color: var(--promote); }
   border-bottom: none;
 }
 .actions-cell {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  flex-wrap: wrap; /* Permite que os botões quebrem a linha no desktop */
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Cria duas colunas */
+  gap: 8px; /* Espaço entre os botões */
+  max-width: 200px; /* Largura máxima para a área dos botões */
 }
 .role-badge {
   padding: 4px 10px;
@@ -202,13 +203,10 @@ button.promote { background-color: var(--promote); }
   }
   .header .badge { padding: 8px 16px; }
 
-  /* Esconde os botões de Admin e Sair do desktop */
   .header-right .header-admin-btn,
   .header-right .header-logout-btn { 
     display: none !important;
   }
-
-  /* Mostra o novo botão de Sair translúcido */
   .logout-badge-btn {
     display: inline-block !important;
   }
@@ -221,15 +219,14 @@ button.promote { background-color: var(--promote); }
     border: 2px solid white; z-index: 1000;
   }
 
-  /* No celular, a tabela volta a ter scroll horizontal para não quebrar */
   .table-container {
     overflow-x: auto !important;
   }
   .actions-cell {
-    flex-wrap: nowrap !important; /* Força os botões a ficarem na mesma linha no celular */
+    display: flex;
+    flex-wrap: nowrap !important;
   }
 
-  /* Posiciona o botão 'Voltar ao Topo' ACIMA do botão 'Admin' */
   .back-to-top-btn {
     bottom: 90px;
     right: 20px;
@@ -249,21 +246,26 @@ button.promote { background-color: var(--promote); }
     gap: 1rem;
     padding: 1.5rem 1rem;
   }
-  .header-left, .header-right {
+
+  .header-left,
+  .header-right {
     flex: unset;
     width: 100%;
     display: flex;
     justify-content: center;
     margin-top: 0.5rem;
   }
+
   .header-center {
     flex: unset;
     justify-content: center;
     margin-top: 0.5rem;
   }
+
   .header-title {
     font-size: 1.8rem;
   }
+
   .badge {
     margin: 0 auto;
   }
