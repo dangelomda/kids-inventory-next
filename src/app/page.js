@@ -1,5 +1,3 @@
-// src/app/page.js
-
 'use client';
 import { useEffect, useMemo, useState, useCallback, useRef } from 'react';
 import { supabase } from '@/lib/supabaseClient';
@@ -21,7 +19,7 @@ export default function Page() {
   const [scrollToItemId, setScrollToItemId] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isBackToTopVisible, setBackToTopVisible] = useState(false);
-  
+
   const formRef = useRef(null);
   const adminPanelRef = useRef(null);
 
@@ -165,6 +163,7 @@ export default function Page() {
         <div className="header-right">
           {isLogged ? (
             <>
+              {/* ADICIONADO: Passando a URL do avatar */}
               <AuthBadge 
                 email={session.user.email} 
                 role={role} 
@@ -180,7 +179,7 @@ export default function Page() {
               <button onClick={handleSignOut} className="header-logout-btn secondary">
                 Sair
               </button>
-              {/* Botão de Sair para CELULAR */}
+              {/* ADICIONADO: Botão de Sair para CELULAR */}
               <button onClick={handleSignOut} className="logout-badge-btn">
                 Sair
               </button>

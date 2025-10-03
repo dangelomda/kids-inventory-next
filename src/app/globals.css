@@ -81,44 +81,8 @@ button.promote { background-color: var(--promote); }
 .dot.admin { background: #22c55e; }
 .dot.member { background: #ffffff; }
 .dot.visitor { background: #94a3b8; }
-.header-right .header-admin-btn,
-.header-right .header-logout-btn {
-  padding: 8px 14px;
-  font-size: 0.9rem;
-}
+.header-right button { padding: 8px 14px; font-size: 0.9rem; }
 .admin-fab { display: none; }
-
-/* --- NOVOS ESTILOS DE AVATAR --- */
-.avatar-img {
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid transparent;
-}
-.avatar-border-admin {
-  border-color: var(--promote); /* Roxo */
-}
-.avatar-border-member {
-  border-color: #16a34a; /* Verde */
-}
-.avatar-border-visitor {
-  border-color: #374151; /* Cinza escuro/preto */
-}
-
-/* NOVO BOTÃO DE LOGOUT PARA CELULAR */
-.logout-badge-btn {
-  display: none; /* Escondido por padrão no desktop */
-  background-color: rgba(255, 255, 255, 0.15);
-  padding: 8px 16px;
-  border-radius: 999px;
-  font-size: 0.875rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
-}
-.logout-badge-btn:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-}
 
 /* --- ESTILOS DO GRID DE ITENS --- */
 .item-grid {
@@ -138,6 +102,7 @@ button.promote { background-color: var(--promote); }
 
 /* --- ESTILOS PARA O PAINEL ADMIN --- */
 .table-container {
+  overflow-x: auto;
   padding: 0.5rem;
 }
 .table {
@@ -187,32 +152,17 @@ button.promote { background-color: var(--promote); }
   .header {
     flex-direction: column; gap: 0.75rem; padding: 1.5rem 1rem;
   }
-  .header-left { display: none; }
+  .header-left, .header-right { display: none; }
   .header-center {
     flex-direction: column; gap: 1rem; order: 1;
   }
   .main-logo { order: 1; }
   .header-title { font-size: 2.5rem; order: 2; }
-  
   .header-right {
-    display: flex !important; 
-    order: 2 !important;
-    justify-content: center !important; 
-    width: 100% !important;
-    gap: 0.75rem;
+    display: flex; order: 3; justify-content: center; width: 100%;
   }
   .header .badge { padding: 8px 16px; }
-
-  /* Esconde os botões GRANDES de Admin e Sair no celular */
-  .header-right .header-admin-btn,
-  .header-right .header-logout-btn { 
-    display: none;
-  }
-  /* Mostra o botão PEQUENO de Sair no celular */
-  .logout-badge-btn {
-    display: inline-block;
-  }
-  
+  .header .header-right button { display: none; }
   .admin-fab {
     display: flex; position: fixed; bottom: 20px; right: 20px;
     background-color: var(--primary); color: white; border-radius: 50%;
@@ -220,22 +170,10 @@ button.promote { background-color: var(--promote); }
     font-size: 0.9rem; font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     border: 2px solid white; z-index: 1000;
   }
-
-  .table-container {
-    overflow-x: auto !important;
-  }
+  /* ADICIONADO: Força o nowrap na célula de ações no mobile */
   .actions-cell {
     display: flex;
-    flex-wrap: nowrap !important;
-  }
-
-  /* Reposiciona o botão Voltar ao Topo acima do Admin */
-  .back-to-top-btn {
-    bottom: 90px;
-    right: 20px;
-    width: 45px;
-    height: 45px;
-    font-size: 1.2rem;
+    flex-wrap: nowrap;
   }
 }
 
@@ -249,21 +187,26 @@ button.promote { background-color: var(--promote); }
     gap: 1rem;
     padding: 1.5rem 1rem;
   }
-  .header-left, .header-right {
+
+  .header-left,
+  .header-right {
     flex: unset;
     width: 100%;
     display: flex;
     justify-content: center;
     margin-top: 0.5rem;
   }
+
   .header-center {
     flex: unset;
     justify-content: center;
     margin-top: 0.5rem;
   }
+
   .header-title {
     font-size: 1.8rem;
   }
+
   .badge {
     margin: 0 auto;
   }
@@ -271,28 +214,61 @@ button.promote { background-color: var(--promote); }
 
 /* --- MODAL DE IMAGEM --- */
 .image-modal {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: rgba(0,0,0,0.8); display: flex; justify-content: center;
-  align-items: center; z-index: 2000;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
 }
 .image-modal img {
-  max-width: 90%; max-height: 90%; border-radius: 12px;
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.5);
 }
 .image-modal .close-btn {
-  position: absolute; top: 20px; right: 20px; font-size: 2rem;
-  font-weight: bold; color: white; cursor: pointer; background: transparent; border: none;
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 2rem;
+  font-weight: bold;
+  color: white;
+  cursor: pointer;
+  background: transparent;
+  border: none;
 }
 
 /* --- SUGESTÕES DE AUTOCOMPLETE --- */
 .suggestions-box {
-  position: absolute; top: 100%; left: 0; right: 0;
-  background: white; border: 1px solid var(--border); border-radius: 6px;
-  margin-top: 4px; z-index: 20; max-height: 200px; overflow-y: auto;
-  list-style: none; padding: 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  margin-top: 4px;
+  z-index: 20;
+  max-height: 200px;
+  overflow-y: auto;
+  list-style: none;
+  padding: 0;
 }
-.suggestions-box li { padding: 8px 12px; cursor: pointer; font-size: 0.9rem; }
-.suggestions-box li:hover { background: #f3f4f6; }
+
+.suggestions-box li {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.suggestions-box li:hover {
+  background: #f3f4f6;
+}
 
 /* --- BOTÃO VOLTAR AO TOPO --- */
 .back-to-top-btn {
@@ -313,6 +289,7 @@ button.promote { background-color: var(--promote); }
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
   cursor: pointer;
   z-index: 999;
+
   opacity: 0;
   visibility: hidden;
   transform: translateY(20px);
@@ -323,4 +300,60 @@ button.promote { background-color: var(--promote); }
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
+}
+
+/* --- NOVAS REGRAS DE RESPONSIVIDADE ADICIONADAS NO FINAL --- */
+
+/* NOVOS ESTILOS DE AVATAR */
+.avatar-img {
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid transparent;
+}
+.avatar-border-admin {
+  border-color: var(--promote);
+}
+.avatar-border-member {
+  border-color: #16a34a;
+}
+.avatar-border-visitor {
+  border-color: #374151;
+}
+
+/* NOVO BOTÃO DE LOGOUT PARA CELULAR */
+.logout-badge-btn {
+  display: none; /* Escondido por padrão */
+}
+
+@media (max-width: 768px) {
+  .header-right {
+    display: flex !important;
+    order: 2 !important;
+    justify-content: center !important;
+    width: 100% !important;
+    gap: 0.75rem;
+  }
+
+  .header-right .header-logout-btn {
+    display: none !important;
+  }
+  
+  .logout-badge-btn {
+    display: inline-block !important;
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 8px 16px;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .logout-badge-btn:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .back-to-top-btn {
+    bottom: 90px;
+  }
 }
