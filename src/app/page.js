@@ -148,8 +148,9 @@ export default function Page() {
     [items, search]
   );
   
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
+  // MUDANÇA 1: Tornar a função síncrona (remover async/await)
+  const handleSignOut = () => {
+    supabase.auth.signOut(); // Apenas dispara o logout. O listener onAuthStateChange cuidará do resto.
   };
 
   return (
@@ -163,7 +164,6 @@ export default function Page() {
         <div className="header-right">
           {isLogged ? (
             <>
-              {/* ADICIONADO: Passando a URL do avatar */}
               <AuthBadge 
                 email={session.user.email} 
                 role={role} 
@@ -179,12 +179,8 @@ export default function Page() {
               <button onClick={handleSignOut} className="header-logout-btn secondary">
                 Sair
               </button>
-              {/* ADICIONADO: Botão de Sair para CELULAR (COM onTouchEnd) */}
-              <button
-                onClick={handleSignOut}
-                onTouchEnd={handleSignOut}
-                className="logout-badge-btn"
-              >
+              {/* MUDANÇA 2: Simplificar o botão de celular de volta para um onClick simples */}
+              <button onClick={handleSignOut} className="logout-badge-btn">
                 Sair
               </button>
             </>
