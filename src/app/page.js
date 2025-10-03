@@ -148,9 +148,14 @@ export default function Page() {
     [items, search]
   );
   
-  // 1. Manter a função síncrona, que é mais estável.
   const handleSignOut = () => {
     supabase.auth.signOut();
+  };
+
+  // Wrapper para o evento de clique nos links de logout
+  const handleLogoutClick = (e) => {
+    e.preventDefault();
+    handleSignOut();
   };
 
   return (
@@ -175,18 +180,19 @@ export default function Page() {
                   Admin
                 </button>
               )}
-              {/* O botão de desktop permanece, pois nunca deu problema. */}
-              <button onClick={handleSignOut} className="header-logout-btn secondary">
-                Sair
-              </button>
-              
-              {/* 2. O botão de celular vira uma tag <a> para máxima compatibilidade com iOS. */}
+              {/* Botão de Sair para DESKTOP (UNIFICADO PARA <a>) */}
               <a
                 href="#"
-                onClick={(e) => {
-                  e.preventDefault(); // Essencial para o <a> não navegar.
-                  handleSignOut();
-                }}
+                onClick={handleLogoutClick}
+                className="header-logout-btn secondary"
+                role="button"
+              >
+                Sair
+              </a>
+              {/* Botão de Sair para CELULAR (UNIFICADO PARA <a>) */}
+              <a
+                href="#"
+                onClick={handleLogoutClick}
                 className="logout-badge-btn"
                 role="button"
               >
