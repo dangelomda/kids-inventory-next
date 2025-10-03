@@ -179,8 +179,12 @@ export default function Page() {
               <button onClick={handleSignOut} className="header-logout-btn secondary">
                 Sair
               </button>
-              {/* ADICIONADO: Botão de Sair para CELULAR */}
-              <button onClick={handleSignOut} className="logout-badge-btn">
+              {/* ADICIONADO: Botão de Sair para CELULAR (COM onTouchEnd) */}
+              <button
+                onClick={handleSignOut}
+                onTouchEnd={handleSignOut}
+                className="logout-badge-btn"
+              >
                 Sair
               </button>
             </>
