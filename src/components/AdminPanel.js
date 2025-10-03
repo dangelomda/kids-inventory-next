@@ -3,7 +3,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
-import Image from 'next/image'; // MUDANÇA: Importa o componente de Imagem
+import Image from 'next/image';
 
 export default function AdminPanel({ visible, onClose, isAdmin }) {
   const [rows, setRows] = useState([]);
@@ -14,7 +14,6 @@ export default function AdminPanel({ visible, onClose, isAdmin }) {
   async function load() {
     if (!isAdmin) return;
     setBusy(true);
-    // select('*') agora vai incluir a nova coluna 'avatar_url' que criamos
     const { data, error } = await supabase
       .from('profiles')
       .select('*')
@@ -43,14 +42,11 @@ export default function AdminPanel({ visible, onClose, isAdmin }) {
       });
 
       if (error) {
-        // erro 404 ou outro non-2xx → data vem do JSON da função
         const errorData = await error.context.json();
         alert(errorData.message || 'Erro inesperado. Verifique se o usuário já fez login pelo menos uma vez.');
       } else if (data?.error) {
-        // erro explícito vindo da função
         alert(data.message || data.error);
       } else {
-        // sucesso
         alert(data?.message || `Usuário ${email} adicionado como membro!`);
         setEmail('');
         load();
@@ -119,7 +115,6 @@ export default function AdminPanel({ visible, onClose, isAdmin }) {
           <table className="table">
             <thead>
               <tr>
-                {/* MUDANÇA: Adicionada coluna Avatar */}
                 <th style={{width: '50px'}}>Avatar</th>
                 <th>Email</th>
                 <th>Função</th>
@@ -130,7 +125,6 @@ export default function AdminPanel({ visible, onClose, isAdmin }) {
             <tbody>
               {rows.map(p => (
                 <tr key={p.id}>
-                  {/* MUDANÇA: Adicionada a célula com a imagem */}
                   <td>
                     {p.avatar_url && (
                       <Image
@@ -147,7 +141,8 @@ export default function AdminPanel({ visible, onClose, isAdmin }) {
                     <span className={`role-badge ${p.role}`}>{p.role}</span>
                   </td>
                   <td>{p.active ? 'ATIVO' : 'INATIVO'}</td>
-                  <td style={{ display: 'flex', justifyContent: 'center', gap: '12px', whiteSpace: 'nowrap' }}>
+                  {/* MUDANÇA FINAL: Removido 'style' e adicionada a classe 'actions-cell' */}
+                  <td className="actions-cell">
                     <button className="secondary" onClick={() => toggle(p)}>
                       {p.active ? 'Desativar' : 'Ativar'}
                     </button>

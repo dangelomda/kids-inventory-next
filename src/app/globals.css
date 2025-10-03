@@ -81,14 +81,18 @@ button.promote { background-color: var(--promote); }
 .dot.admin { background: #22c55e; }
 .dot.member { background: #ffffff; }
 .dot.visitor { background: #94a3b8; }
-.header-right button { padding: 8px 14px; font-size: 0.9rem; }
+.header-right .header-admin-btn,
+.header-right .header-logout-btn {
+  padding: 8px 14px;
+  font-size: 0.9rem;
+}
 .admin-fab { display: none; }
 
 /* --- NOVOS ESTILOS DE AVATAR --- */
 .avatar-img {
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid transparent; /* Borda base transparente */
+  border: 2px solid transparent;
 }
 .avatar-border-admin {
   border-color: var(--promote); /* Roxo */
@@ -134,7 +138,6 @@ button.promote { background-color: var(--promote); }
 
 /* --- ESTILOS PARA O PAINEL ADMIN --- */
 .table-container {
-  /* overflow-x: auto;  A rolagem agora só se aplica no mobile */
   padding: 0.5rem;
 }
 .table {
@@ -153,6 +156,12 @@ button.promote { background-color: var(--promote); }
 }
 .table tr:last-child td {
   border-bottom: none;
+}
+.actions-cell {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap; /* Permite que os botões quebrem a linha no desktop */
 }
 .role-badge {
   padding: 4px 10px;
@@ -184,12 +193,12 @@ button.promote { background-color: var(--promote); }
   .main-logo { order: 1; }
   .header-title { font-size: 2.5rem; order: 2; }
   
-  /* Ajuste no header-right para celular */
   .header-right {
     display: flex !important; 
-    order: 2 !important; /* Coloca abaixo do título */
+    order: 2 !important;
     justify-content: center !important; 
     width: 100% !important;
+    gap: 0.75rem;
   }
   .header .badge { padding: 8px 16px; }
 
@@ -216,8 +225,17 @@ button.promote { background-color: var(--promote); }
   .table-container {
     overflow-x: auto !important;
   }
-  .table td[style*="white-space: nowrap"] {
-    white-space: nowrap !important;
+  .actions-cell {
+    flex-wrap: nowrap !important; /* Força os botões a ficarem na mesma linha no celular */
+  }
+
+  /* Posiciona o botão 'Voltar ao Topo' ACIMA do botão 'Admin' */
+  .back-to-top-btn {
+    bottom: 90px;
+    right: 20px;
+    width: 45px;
+    height: 45px;
+    font-size: 1.2rem;
   }
 }
 
@@ -231,26 +249,21 @@ button.promote { background-color: var(--promote); }
     gap: 1rem;
     padding: 1.5rem 1rem;
   }
-
-  .header-left,
-  .header-right {
+  .header-left, .header-right {
     flex: unset;
     width: 100%;
     display: flex;
     justify-content: center;
     margin-top: 0.5rem;
   }
-
   .header-center {
     flex: unset;
     justify-content: center;
     margin-top: 0.5rem;
   }
-
   .header-title {
     font-size: 1.8rem;
   }
-
   .badge {
     margin: 0 auto;
   }
@@ -258,107 +271,40 @@ button.promote { background-color: var(--promote); }
 
 /* --- MODAL DE IMAGEM --- */
 .image-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.8);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.8); display: flex; justify-content: center;
+  align-items: center; z-index: 2000;
 }
-
 .image-modal img {
-  max-width: 90%;
-  max-height: 90%;
-  border-radius: 12px;
+  max-width: 90%; max-height: 90%; border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0,0,0,0.5);
 }
-
 .image-modal .close-btn {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  font-size: 2rem;
-  font-weight: bold;
-  color: white;
-  cursor: pointer;
-  background: transparent;
-  border: none;
+  position: absolute; top: 20px; right: 20px; font-size: 2rem;
+  font-weight: bold; color: white; cursor: pointer; background: transparent; border: none;
 }
 
 /* --- SUGESTÕES DE AUTOCOMPLETE --- */
 .suggestions-box {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  right: 0;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  margin-top: 4px;
-  z-index: 20;
-  max-height: 200px;
-  overflow-y: auto;
-  list-style: none;
-  padding: 0;
+  position: absolute; top: 100%; left: 0; right: 0;
+  background: white; border: 1px solid var(--border); border-radius: 6px;
+  margin-top: 4px; z-index: 20; max-height: 200px; overflow-y: auto;
+  list-style: none; padding: 0;
 }
-
-.suggestions-box li {
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-
-.suggestions-box li:hover {
-  background: #f3f4f6;
-}
+.suggestions-box li { padding: 8px 12px; cursor: pointer; font-size: 0.9rem; }
+.suggestions-box li:hover { background: #f3f4f6; }
 
 /* --- BOTÃO VOLTAR AO TOPO --- */
 .back-to-top-btn {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
-  background-color: var(--primary);
-  color: white;
-  border: 2px solid white;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-  cursor: pointer;
-  z-index: 999;
-
-  /* Efeito de aparição */
-  opacity: 0;
-  visibility: hidden;
-  transform: translateY(20px);
+  position: fixed; bottom: 20px; right: 20px;
+  background-color: var(--primary); color: white; border: 2px solid white;
+  border-radius: 50%; width: 50px; height: 50px; display: flex;
+  justify-content: center; align-items: center; font-size: 1.5rem;
+  font-weight: bold; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  cursor: pointer; z-index: 999;
+  opacity: 0; visibility: hidden; transform: translateY(20px);
   transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
 }
-
 .back-to-top-btn.visible {
-  opacity: 1;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-/* --- AJUSTE PARA CELULAR (SOBRESCREVE O MEDIA QUERY ANTERIOR) --- */
-@media (max-width: 768px) {
-  /* ... (mantém seus outros estilos de celular aqui) ... */
-  
-  /* Posiciona o botão 'Voltar ao Topo' ACIMA do botão 'Admin' */
-  .back-to-top-btn {
-    bottom: 90px;
-    right: 20px; /* Garante o mesmo alinhamento horizontal do botão Admin */
-    width: 45px;
-    height: 45px;
-    font-size: 1.2rem;
-  }
+  opacity: 1; visibility: visible; transform: translateY(0);
 }
