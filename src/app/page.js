@@ -21,7 +21,7 @@ export default function Page() {
   const [scrollToItemId, setScrollToItemId] = useState(null);
   const [selectedImage, setSelectedImage] = useState(null);
   const [isBackToTopVisible, setBackToTopVisible] = useState(false);
-
+  
   const formRef = useRef(null);
   const adminPanelRef = useRef(null);
 
@@ -39,7 +39,7 @@ export default function Page() {
     }
     const { data: prof, error } = await supabase
       .from('profiles')
-      .select('role, active') // O avatar_url não é necessário aqui, pois já vem na sessão
+      .select('role, active, avatar_url')
       .eq('id', s.user.id)
       .maybeSingle();
     setSession(s);
@@ -65,10 +65,19 @@ export default function Page() {
   const exportXlsx = useCallback(async () => {
     const { data } = await supabase.from('items').select('*').order('name');
     if (!data?.length) return alert('Nenhum item para exportar.');
-    const rows = data.map(x => ({
-      Item: x.name, Quantidade: x.quantity, Local: x.location, Foto: x.photo_url || 'N/A'
+    
+    const rows = data.map(item => ({
+      'Item': item.name,
+      'Quantidade': item.quantity,
+      'Local': item.location,
+      'Foto': item.photo_url 
+        ? { t: 's', v: 'Ver Foto', l: { Target: item.photo_url, Tooltip: 'Clique para abrir a imagem' } } 
+        : 'N/A'
     }));
-    const ws = XLSX.utils.json_to_sheet(rows);
+    
+    const ws = XLSX.utils.json_to_sheet(rows, { cellStyles: true });
+    ws['!cols'] = [{wch:40},{wch:15},{wch:30},{wch:15}];
+    
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Inventário');
     XLSX.writeFile(wb, 'inventario_kids.xlsx');
@@ -141,7 +150,6 @@ export default function Page() {
     [items, search]
   );
   
-  // Função de logout, para ser usada por ambos os botões
   const handleSignOut = async () => {
     await supabase.auth.signOut();
   };
@@ -157,7 +165,6 @@ export default function Page() {
         <div className="header-right">
           {isLogged ? (
             <>
-              {/* MUDANÇA: Passando a URL do avatar para o AuthBadge */}
               <AuthBadge 
                 email={session.user.email} 
                 role={role} 
@@ -169,11 +176,11 @@ export default function Page() {
                   Admin
                 </button>
               )}
-              {/* Este botão de Sair agora tem uma classe para ser escondido no celular */}
+              {/* Botão de Sair para DESKTOP */}
               <button onClick={handleSignOut} className="header-logout-btn secondary">
                 Sair
               </button>
-              {/* MUDANÇA: Novo botão de Sair, que só vai aparecer no celular */}
+              {/* Botão de Sair para CELULAR */}
               <button onClick={handleSignOut} className="logout-badge-btn">
                 Sair
               </button>
